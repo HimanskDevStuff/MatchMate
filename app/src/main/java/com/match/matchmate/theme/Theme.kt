@@ -1,6 +1,5 @@
-package com.match.ui.theme
+package com.match.matchmate.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme

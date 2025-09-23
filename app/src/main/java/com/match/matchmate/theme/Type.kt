@@ -1,4 +1,4 @@
-package com.match.ui.theme
+package com.match.matchmate.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

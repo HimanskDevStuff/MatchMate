@@ -1,11 +1,13 @@
 package com.match.matchmate.data.di
 
+import com.match.matchmate.data.repository.DefaultMatchMateRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import com.match.matchmate.data.repository.DefaultMatchmateRepository
 import com.match.matchmate.domain.repository.MatchmateRepository
+import dagger.Provides
+import retrofit2.Retrofit
 import javax.inject.Singleton
 
 /**
@@ -13,14 +15,12 @@ import javax.inject.Singleton
  */
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class MatchmateDataModule {
+class AppModule {
 
     /**
      * Binds the repository implementation to its interface.
      */
-    @Binds
+    @Provides
     @Singleton
-    abstract fun bindMatchmateRepository(
-        repository: DefaultMatchmateRepository
-    ): MatchmateRepository
+    fun provideRetrofitInstance() = Retrofit.Builder()
 }

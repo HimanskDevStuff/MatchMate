@@ -1,4 +1,4 @@
-package com.match.matchmate.presentation
+package com.match.matchmate.presentation.matchMate
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,12 +12,16 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.ui.tooling.preview.Preview
+import com.match.matchmate.presentation.matchMate.contracts.MatchmateAction
+import com.match.matchmate.presentation.matchMate.contracts.MatchmateEvent
+import com.match.matchmate.presentation.matchMate.contracts.MatchmateState
+import com.match.matchmate.presentation.matchMate.viewmodel.MatchmateViewModel
 
 /**
  * Composable entry point for the Matchmate feature.
  */
 @Composable
-fun MatchmateRoot(
+fun MatchMateRoot(
     viewModel: MatchmateViewModel = hiltViewModel(),
     onEvent: (MatchmateEvent) -> Unit
 ) {

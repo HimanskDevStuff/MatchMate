@@ -1,4 +1,4 @@
-package com.match.matchmate.presentation
+package com.match.matchmate.presentation.matchMate.contracts
 
 /**
  * Defines the one-off events that the ViewModel can send to the UI.

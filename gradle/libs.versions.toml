@@ -14,6 +14,11 @@ hilt = "2.57.1"
 hiltNavigationCompose = "1.3.0"
 lifecycleViewmodel = "2.9.4"
 kotlinxCoroutines = "1.10.2"
+retrofit = "3.1.0"
+library = "4.2.0"
+converterGson = "2.11.0"
+
+
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -36,6 +41,10 @@ hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-com
 lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodel" }
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }
+retrofit= { module = "com.squareup.retrofit2:retrofit", version = "3.0.0" }
+chucker = { module = "com.github.chuckerteam.chucker:library", version.ref = "library" }
+chucker-no-op = { module = "com.github.chuckerteam.chucker:library-no-op", version.ref = "library" }
+converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

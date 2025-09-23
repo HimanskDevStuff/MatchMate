@@ -8,7 +8,7 @@ import javax.inject.Inject
 /**
  * Concrete implementation of the repository for the Matchmate feature.
  */
-class DefaultMatchmateRepository @Inject constructor() : MatchmateRepository {
+class DefaultMatchMateRepository @Inject constructor() : MatchmateRepository {
 
     override suspend fun getMatchmateData(): Result<Matchmate> {
         return try {

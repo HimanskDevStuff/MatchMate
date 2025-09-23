@@ -1,5 +1,4 @@
-package com.match.matchmate.presentation
-
+package com.match.matchmate.presentation.navigation
 
 import kotlinx.serialization.Serializable
 
@@ -8,4 +7,4 @@ import kotlinx.serialization.Serializable
  * Used by a type-safe navigation library.
  */
 @Serializable
-data object MatchmateRoute 
+data object NavigationRoutes

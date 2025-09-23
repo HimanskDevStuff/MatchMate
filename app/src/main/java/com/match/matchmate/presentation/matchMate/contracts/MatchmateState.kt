@@ -1,6 +1,4 @@
-package com.match.matchmate.presentation
-
-import com.match.matchmate.presentation.model.MatchmateUiModel
+package com.match.matchmate.presentation.matchMate.contracts
 
 /**
  * Represents the state of the Matchmate screen.

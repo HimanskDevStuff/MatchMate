@@ -41,6 +41,7 @@ android {
     }
 }
 
+
 dependencies {
 
     implementation(libs.androidx.core.ktx)
@@ -63,6 +64,16 @@ dependencies {
     // Coroutines
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
+
+    // Retrofit
+    implementation(libs.retrofit)
+
+    //Chucker
+    debugImplementation(libs.chucker)
+    releaseImplementation(libs.chucker.no.op)
+
+    //GsonConverter
+    implementation(libs.converter.gson)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
