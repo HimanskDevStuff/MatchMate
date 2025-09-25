@@ -1,10 +1,10 @@
 package com.match.matchmate.presentation.navigation
 
-import kotlinx.serialization.Serializable
-
 /**
  * Defines the navigation route for the Matchmate screen.
  * Used by a type-safe navigation library.
  */
-@Serializable
-data object NavigationRoutes
+
+sealed class Screen(val route: String){
+    data object HomeRoute : Screen("HomeScreen")
+}

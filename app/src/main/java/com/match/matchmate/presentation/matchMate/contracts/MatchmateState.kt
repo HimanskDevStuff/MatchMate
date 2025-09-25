@@ -1,5 +1,7 @@
 package com.match.matchmate.presentation.matchMate.contracts
 
+import com.match.matchmate.data.model.MatchMateDto
+
 /**
  * Represents the state of the Matchmate screen.
  *
@@ -8,5 +10,5 @@ package com.match.matchmate.presentation.matchMate.contracts
  */
 data class MatchmateState(
     val isLoading: Boolean = false,
-    val items: List<MatchmateUiModel> = emptyList()
+    val matchMateResponse: MatchMateDto = MatchMateDto()
 )

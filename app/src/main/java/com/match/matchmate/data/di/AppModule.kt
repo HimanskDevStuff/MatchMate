@@ -1,13 +1,16 @@
 package com.match.matchmate.data.di
 
-import com.match.matchmate.data.repository.DefaultMatchMateRepository
-import dagger.Binds
+import android.app.Application
+import android.content.Context
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import com.match.matchmate.domain.repository.MatchmateRepository
 import dagger.Provides
+import dagger.hilt.android.qualifiers.ApplicationContext
 import retrofit2.Retrofit
+import saathi.core.service.InternetChecker
+import saathi.core.service.InternetCheckerImpl
 import javax.inject.Singleton
 
 /**
@@ -15,12 +18,17 @@ import javax.inject.Singleton
  */
 @Module
 @InstallIn(SingletonComponent::class)
-class AppModule {
+object AppModule {
 
-    /**
-     * Binds the repository implementation to its interface.
-     */
     @Provides
     @Singleton
-    fun provideRetrofitInstance() = Retrofit.Builder()
+    fun provideChuckerInterceptor(@ApplicationContext appContext: Context): ChuckerInterceptor {
+        return ChuckerInterceptor.Builder(context = appContext).build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideInternetChecker(@ApplicationContext appContext: Context): InternetChecker {
+        return InternetCheckerImpl(appContext)
+    }
 }

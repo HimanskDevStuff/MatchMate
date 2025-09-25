@@ -1,7 +1,6 @@
 package com.match.matchmate.data.di
 
 import com.match.matchmate.data.service.MatchMateApiService
-import com.match.matchmate.domain.model.Matchmate
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -14,7 +13,6 @@ import javax.inject.Singleton
 object ApiServiceModule {
     @Provides
     @Singleton
-    fun provideApiService(retrofit: Retrofit) {
+    fun provideApiService(retrofit: Retrofit) =
         retrofit.create(MatchMateApiService::class.java)
-    }
 }

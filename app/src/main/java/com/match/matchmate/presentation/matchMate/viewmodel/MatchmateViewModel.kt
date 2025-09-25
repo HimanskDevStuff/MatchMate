@@ -2,6 +2,8 @@ package com.match.matchmate.presentation.matchMate.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.match.matchmate.data.base.BaseUiState
+import com.match.matchmate.data.model.MatchMateDto
 import com.match.matchmate.domain.usecase.GetMatchmateDataUseCase
 import com.match.matchmate.presentation.matchMate.contracts.MatchmateAction
 import com.match.matchmate.presentation.matchMate.contracts.MatchmateEvent
@@ -11,6 +13,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -36,6 +39,7 @@ class MatchmateViewModel @Inject constructor(
     fun onAction(action: MatchmateAction) {
         when (action) {
             else -> {
+
             }
         }
     }
@@ -43,14 +47,22 @@ class MatchmateViewModel @Inject constructor(
     private fun loadInitialData() {
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
-
-            getMatchmateDataUseCase()
-                .onSuccess {
+            getMatchmateDataUseCase.getMatchMateData().collectLatest { response ->
+                when(response) {
+                    is BaseUiState.Loading -> {
+                        _state.update { it.copy(isLoading = true) }
+                    }
+                    is BaseUiState.Success -> {
+                        _state.update { it.copy(
+                            isLoading = false,
+                            matchMateResponse = response.data ?: MatchMateDto()
+                        ) }
+                    }
+                    is BaseUiState.Error -> {
+                        _state.update { it.copy(isLoading = false) }
+                    }
                 }
-                .onFailure {
-                }
-
-            _state.update { it.copy(isLoading = false) }
+            }
         }
     }
 }

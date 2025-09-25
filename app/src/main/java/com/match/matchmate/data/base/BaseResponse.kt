@@ -1,17 +1,18 @@
 package com.match.matchmate.data.base
 
-import com.google.gson.annotations.SerializedName
-import com.match.matchmate.data.base.ErrorResponse
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class BaseResponse<T>(
-    @SerializedName("success")
+    @SerialName("success")
     val success: Boolean,
-    @SerializedName("version")
+    @SerialName("version")
     val version: String,
-    @SerializedName("date")
+    @SerialName("date")
     val date: String,
-    @SerializedName("data")
+    @SerialName("data")
     val `data`: T,
-    @SerializedName("error")
+    @SerialName("error")
     val error: ErrorResponse
-    )
+)

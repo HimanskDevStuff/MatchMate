@@ -1,9 +1,11 @@
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.dagger)
-    id("kotlin-kapt")
+    alias(libs.plugins.kotlinxSerializationJson)
+    alias(libs.plugins.kotlinkapt)
 }
 
 android {
@@ -19,10 +21,14 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-
     buildTypes {
-        release {
+        debug {
             isMinifyEnabled = false
+            buildConfigField("String", "API_BASE_URL", "\"https://randomuser.me\"")
+        }
+        release {
+            isMinifyEnabled = true
+            buildConfigField("String", "API_BASE_URL", "\"https://randomuser.me\"")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -37,6 +43,7 @@ android {
         jvmTarget = "11"
     }
     buildFeatures {
+        buildConfig = true
         compose = true
     }
 }
@@ -72,8 +79,16 @@ dependencies {
     debugImplementation(libs.chucker)
     releaseImplementation(libs.chucker.no.op)
 
-    //GsonConverter
-    implementation(libs.converter.gson)
+    //Kotlinx serialization
+    implementation(libs.kotlinx.serialization.json)
+    //ConverterFactory kotlinX for Retrofit
+    implementation(libs.converter.kotlinx.serialization)
+
+    //nav2
+    implementation(libs.androidx.navigation.compose)
+
+    //coil
+    implementation(libs.coil.compose)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

@@ -1,12 +1,14 @@
 package com.match.matchmate.data.base
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class ErrorResponse(
-    @SerializedName("code")
+    @SerialName("code")
     val code: String = "",
-    @SerializedName("message")
+    @SerialName("message")
     val message: String? = null,
-    @SerializedName("stack")
+    @SerialName("stack")
     val stack: String=""
 )
