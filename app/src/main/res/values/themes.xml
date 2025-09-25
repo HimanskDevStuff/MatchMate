@@ -2,4 +2,14 @@
 <resources>
 
     <style name="Theme.MatchMate" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <style name="Theme.MyApp.Launcher" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/red</item>
+        <item name="windowSplashScreenIconBackgroundColor">@color/white</item>
+        <item name="postSplashScreenTheme">@style/Theme.MatchMate</item>
+
+        <!-- make status/nav bars red too -->
+        <item name="android:statusBarColor">@color/red</item>
+        <item name="android:navigationBarColor">@color/red</item>
+    </style>
 </resources>

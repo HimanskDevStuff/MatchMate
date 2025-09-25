@@ -81,13 +81,7 @@ fun NoMatchScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(
-                        Color.Black.copy(alpha = 0.85f),
-                        Color(0xFF1A1A1A).copy(alpha = 0.9f),
-                        Color(0xFF2D2D2D).copy(alpha = 0.8f)
-                    )
-                )
+                Color.Transparent
             )
     ) {
         brokenHeartParticles.forEach { particle ->

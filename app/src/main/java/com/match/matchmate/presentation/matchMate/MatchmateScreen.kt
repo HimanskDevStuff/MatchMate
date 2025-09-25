@@ -20,6 +20,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.match.matchmate.data.model.MatchStatus
 import com.match.matchmate.presentation.base.components.CircularProgressComponent
+import com.match.matchmate.presentation.base.components.ShaadiSwipeCard
 import com.match.matchmate.presentation.matchMate.components.MatchScreen
 import com.match.matchmate.presentation.matchMate.components.NoMatchScreen
 import com.match.matchmate.presentation.matchMate.components.VerticalPagerComponent
@@ -74,50 +75,67 @@ private fun MatchmateScreen(
             if (state.isLoading) {
                 CircularProgressComponent()
             } else {
-                VerticalPager(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    userScrollEnabled = true,
-                    state = pagerState,
-                    key = { index ->
-                        state.matchMateResponse.results[index].login.uuid
-                    }) { index ->
-                    when(state.matchMateResponse.results[index].matchStatus){
-                        MatchStatus.NOT_DECIDED -> {
-                            VerticalPagerComponent(
-                                index = index,
-                                userData = state.matchMateResponse.results[index],
-                                onAction = onAction
-                            )
-                        }
-                        MatchStatus.LIKED -> {
-                            MatchScreen(
-                                userImageRes = "\"https://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png\"",
-                                matchImageRes = state.matchMateResponse.results[index].picture.thumbnail,
-                                matchName = state.matchMateResponse.results[index].name.first,
-                                onKeepSwiping = {
-                                    coroutineScope.launch {
-                                        pagerState
-                                            .animateScrollToPage(currentPage.value + 1)
+                ShaadiSwipeCard(
+                    disableSwipe = state.matchMateResponse.results[currentPage.value].matchStatus != MatchStatus.NOT_DECIDED,
+                    onSwipeLeftAction = {
+                        onAction.invoke(MatchmateAction.DislikeClicked(
+                            state.matchMateResponse.results[currentPage.value].login.uuid,
+                            currentPage.value
+                        ))
+                    },
+                    onSwipeRightAction = {
+                        onAction.invoke(MatchmateAction.LikeClicked(
+                            state.matchMateResponse.results[currentPage.value].login.uuid,
+                            currentPage.value
+                        ))
+                    }
+                ){
+                    VerticalPager(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        userScrollEnabled = true,
+                        state = pagerState,
+                        key = { index ->
+                            state.matchMateResponse.results[index].login.uuid
+                        }) { index ->
+                        when(state.matchMateResponse.results[index].matchStatus){
+                            MatchStatus.NOT_DECIDED -> {
+                                VerticalPagerComponent(
+                                    index = index,
+                                    userData = state.matchMateResponse.results[index],
+                                    onAction = onAction
+                                )
+                            }
+                            MatchStatus.LIKED -> {
+                                MatchScreen(
+                                    userImageRes = "\"https://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png\"",
+                                    matchImageRes = state.matchMateResponse.results[index].picture.thumbnail,
+                                    matchName = state.matchMateResponse.results[index].name.first,
+                                    onKeepSwiping = {
+                                        coroutineScope.launch {
+                                            pagerState
+                                                .animateScrollToPage(currentPage.value + 1)
+                                        }
                                     }
-                                }
-                            )
-                        }
-                        MatchStatus.DISLIKED -> {
-                            NoMatchScreen(
-                                userImageRes = "https://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png",
-                                matchImageRes = state.matchMateResponse.results[index].picture.thumbnail,
-                                matchName = state.matchMateResponse.results[index].name.first,
-                                onKeepSwiping = {
-                                    coroutineScope.launch {
-                                        pagerState
-                                            .animateScrollToPage(currentPage.value + 1)
+                                )
+                            }
+                            MatchStatus.DISLIKED -> {
+                                NoMatchScreen(
+                                    userImageRes = "https://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png",
+                                    matchImageRes = state.matchMateResponse.results[index].picture.thumbnail,
+                                    matchName = state.matchMateResponse.results[index].name.first,
+                                    onKeepSwiping = {
+                                        coroutineScope.launch {
+                                            pagerState
+                                                .animateScrollToPage(currentPage.value + 1)
+                                        }
                                     }
-                                }
-                            )
+                                )
+                            }
                         }
                     }
                 }
+
             }
         }
     }
