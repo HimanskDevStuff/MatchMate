@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.match.matchmate.data.base.BaseUiState
 import com.match.matchmate.data.model.MatchMateDto
+import com.match.matchmate.data.model.MatchStatus
 import com.match.matchmate.domain.usecase.GetMatchmateDataUseCase
 import com.match.matchmate.presentation.matchMate.contracts.MatchmateAction
 import com.match.matchmate.presentation.matchMate.contracts.MatchmateEvent
@@ -38,6 +39,36 @@ class MatchmateViewModel @Inject constructor(
 
     fun onAction(action: MatchmateAction) {
         when (action) {
+            is MatchmateAction.LikeClicked -> {
+                val updatedResults =
+                    _state.value.matchMateResponse.results.mapIndexed { index, result ->
+                        if (index == action.index) result.copy(matchStatus = MatchStatus.LIKED)
+                        else result
+                    }
+                _state.update { myState ->
+                    myState.copy(
+                        matchMateResponse = myState.matchMateResponse.copy(
+                            results = updatedResults
+                        )
+                    )
+                }
+            }
+
+            is MatchmateAction.DislikeClicked -> {
+                val updatedResults =
+                    _state.value.matchMateResponse.results.mapIndexed { index, result ->
+                        if (index == action.index) result.copy(matchStatus = MatchStatus.DISLIKED)
+                        else result
+                    }
+                _state.update { myState ->
+                    myState.copy(
+                        matchMateResponse = myState.matchMateResponse.copy(
+                            results = updatedResults
+                        )
+                    )
+                }
+            }
+
             else -> {
 
             }
@@ -48,16 +79,20 @@ class MatchmateViewModel @Inject constructor(
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
             getMatchmateDataUseCase.getMatchMateData().collectLatest { response ->
-                when(response) {
+                when (response) {
                     is BaseUiState.Loading -> {
                         _state.update { it.copy(isLoading = true) }
                     }
+
                     is BaseUiState.Success -> {
-                        _state.update { it.copy(
-                            isLoading = false,
-                            matchMateResponse = response.data ?: MatchMateDto()
-                        ) }
+                        _state.update {
+                            it.copy(
+                                isLoading = false,
+                                matchMateResponse = response.data ?: MatchMateDto()
+                            )
+                        }
                     }
+
                     is BaseUiState.Error -> {
                         _state.update { it.copy(isLoading = false) }
                     }

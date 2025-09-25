@@ -48,7 +48,9 @@ data class MatchMateDto(
         @SerialName("picture")
         val picture: Picture = Picture(),
         @SerialName("registered")
-        val registered: Registered = Registered()
+        val registered: Registered = Registered(),
+
+        val matchStatus: MatchStatus = MatchStatus.NOT_DECIDED
     ) {
         @Serializable
         data class Dob(
@@ -152,4 +154,10 @@ data class MatchMateDto(
             val date: String = ""
         )
     }
+}
+
+enum class MatchStatus {
+    LIKED,
+    DISLIKED,
+    NOT_DECIDED
 }

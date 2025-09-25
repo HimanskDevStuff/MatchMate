@@ -5,5 +5,6 @@ package com.match.matchmate.presentation.matchMate.contracts
  * for the Matchmate feature.
  */
 sealed interface MatchmateAction {
-   data class ButtonClicked(val itemId: String) : MatchmateAction
+   data class LikeClicked(val uuid: String, val index: Int) : MatchmateAction
+   data class DislikeClicked(val uuid: String, val index: Int) : MatchmateAction
 }
