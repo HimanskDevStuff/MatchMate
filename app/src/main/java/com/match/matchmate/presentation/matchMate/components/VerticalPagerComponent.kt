@@ -57,7 +57,6 @@ fun VerticalPagerComponent(
     index: Int,
     userData: MatchMateDto.Result = MatchMateDto.Result(),
     onAction: (MatchmateAction) -> Unit = {},
-    onKeepSwiping: () -> Unit = {},
 ) {
     Column(
         modifier = Modifier

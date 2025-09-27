@@ -16,9 +16,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 
 interface InternetChecker {
-    /**
-     * Emits [Boolean] value when the current network becomes available or unavailable.
-     */
     val isNetworkConnectedFlow: StateFlow<Boolean>
 
     val isInternetAvailable: Boolean

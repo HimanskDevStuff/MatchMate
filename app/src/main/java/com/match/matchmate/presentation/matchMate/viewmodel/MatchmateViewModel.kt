@@ -21,9 +21,6 @@ import kotlinx.coroutines.launch
 import saathi.core.service.InternetChecker
 import javax.inject.Inject
 
-/**
- * Manages the business logic and state for the Matchmate feature.
- */
 @HiltViewModel
 class MatchmateViewModel @Inject constructor(
     private val getMatchmateDataUseCase: GetMatchmateDataUseCase,
@@ -37,11 +34,12 @@ class MatchmateViewModel @Inject constructor(
     val event = _event.asSharedFlow()
 
     init {
-        loadMatchMateDate()
         viewModelScope.launch {
             internetChecker.isNetworkConnectedFlow.collectLatest { isAvailable ->
-
                 _state.update { it.copy(isInternetAvailable = isAvailable) }
+               if (_state.value.matchMateResponse.results.isEmpty() || _state.value.pageToLoad > _state.value.currentPage) {
+                    loadMatchMateDate()
+                }
             }
         }
     }
@@ -61,6 +59,14 @@ class MatchmateViewModel @Inject constructor(
                         )
                     )
                 }
+
+                viewModelScope.launch {
+                    try {
+                        getMatchmateDataUseCase.updateMatchStatus(action.uuid, MatchStatus.LIKED)
+                    } catch (e: Exception) {
+                        Log.e("MatchmateViewModel", "Error updating like status: ${e.message}")
+                    }
+                }
             }
 
             is MatchmateAction.DislikeClicked -> {
@@ -76,24 +82,22 @@ class MatchmateViewModel @Inject constructor(
                         )
                     )
                 }
+
+                viewModelScope.launch {
+                    try {
+                        getMatchmateDataUseCase.updateMatchStatus(action.uuid, MatchStatus.DISLIKED)
+                    } catch (e: Exception) {
+                        Log.e("MatchmateViewModel", "Error updating dislike status: ${e.message}")
+                    }
+                }
             }
 
             is MatchmateAction.LoadNextPageData -> {
-                // Don't increment page here - do it in loadMatchMateDate after successful response
-                if (!_state.value.isLoading && _state.value.hasMorePages) {
+                if (!_state.value.isLoading && _state.value.hasMorePages && _state.value.currentPage == _state.value.pageToLoad) {
+                    Log.d("MatchmateViewModel", "Loading next page: ${_state.value.pageToLoad}")
+                    _state.update { it.copy(pageToLoad = _state.value.currentPage + 1) }
                     loadMatchMateDate()
                 }
-            }
-
-            is MatchmateAction.RefreshData -> {
-                _state.update {
-                    it.copy(
-                        currentPage = 0,
-                        hasMorePages = true,
-                        matchMateResponse = MatchMateDto()
-                    )
-                }
-                loadMatchMateDate()
             }
 
             else -> {
@@ -105,8 +109,8 @@ class MatchmateViewModel @Inject constructor(
     private fun loadMatchMateDate() {
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
-            // Use currentPage + 1 for the API call since most APIs expect 1-based indexing
-            val pageToLoad = _state.value.currentPage + 1
+            val pageToLoad = _state.value.pageToLoad
+
             getMatchmateDataUseCase.getMatchMateData(pageToLoad, 10).collectLatest { response ->
                 when (response) {
                     is BaseUiState.Loading -> {
@@ -124,18 +128,14 @@ class MatchmateViewModel @Inject constructor(
                                     results = ArrayList(currentState.matchMateResponse.results + newResults)
                                 ),
                                 hasMorePages = newResults.size == 10,
-                                // Only increment page after successful response
-                                currentPage = if (newResults.isNotEmpty()) currentState.currentPage + 1 else currentState.currentPage
+                                currentPage = if (newResults.isNotEmpty()) currentState.pageToLoad else currentState.currentPage
                             )
                         }
                     }
 
                     is BaseUiState.Error -> {
                         _state.update { it.copy(isLoading = false) }
-                        Log.e(
-                            "MatchmateViewModel",
-                            "Error loading page $pageToLoad: ${response.error.message ?: response.error.code}"
-                        )
+                        Log.e("MatchmateViewModel", "Error loading page $pageToLoad")
                     }
                 }
             }

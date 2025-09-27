@@ -16,16 +16,20 @@ class MatchMateLocalDataSource @Inject constructor(
         return matchMateDao.getAllMatchMates()
     }
 
-    suspend fun getMatchMateByUuid(uuid: String): MatchMateEntity? {
-        return matchMateDao.getMatchMateByUuid(uuid)
+    suspend fun getMatchMatesByPage(pageNumber: Int): List<MatchMateEntity> {
+        return matchMateDao.getMatchMatesByPage(pageNumber)
+    }
+
+    suspend fun getPageItemCount(pageNumber: Int): Int {
+        return matchMateDao.getPageItemCount(pageNumber)
+    }
+
+    suspend fun hasPageData(pageNumber: Int): Boolean {
+        return getPageItemCount(pageNumber) > 0
     }
 
     suspend fun insertMatchMates(matchMates: List<MatchMateEntity>) {
         matchMateDao.insertMatchMates(matchMates)
-    }
-
-    suspend fun insertMatchMate(matchMate: MatchMateEntity) {
-        matchMateDao.insertMatchMate(matchMate)
     }
 
     suspend fun updateMatchStatus(uuid: String, status: MatchStatus) {
@@ -36,11 +40,5 @@ class MatchMateLocalDataSource @Inject constructor(
         matchMateDao.clearAll()
     }
 
-    suspend fun getCount(): Int {
-        return matchMateDao.getCount()
-    }
 
-    suspend fun hasData(): Boolean {
-        return getCount() > 0
-    }
 }

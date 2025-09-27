@@ -4,7 +4,7 @@ import com.match.matchmate.data.local.entity.MatchMateEntity
 import com.match.matchmate.data.model.MatchMateDto
 import com.match.matchmate.data.model.MatchStatus
 
-fun MatchMateDto.Result.toEntity(): MatchMateEntity {
+fun MatchMateDto.Result.toEntity(pageNumber: Int): MatchMateEntity {
     return MatchMateEntity(
         uuid = login.uuid,
         cell = cell,
@@ -40,7 +40,8 @@ fun MatchMateDto.Result.toEntity(): MatchMateEntity {
         pictureThumbnail = picture.thumbnail,
         registeredAge = registered.age,
         registeredDate = registered.date,
-        matchStatus = matchStatus
+        matchStatus = matchStatus,
+        pageNumber = pageNumber
     )
 }
 
@@ -104,8 +105,8 @@ fun MatchMateEntity.toResult(): MatchMateDto.Result {
     )
 }
 
-fun List<MatchMateDto.Result>.toEntityList(): List<MatchMateEntity> {
-    return map { it.toEntity() }
+fun List<MatchMateDto.Result>.toEntityList(pageNumber: Int): List<MatchMateEntity> {
+    return map { it.toEntity(pageNumber) }
 }
 
 fun List<MatchMateEntity>.toResultList(): List<MatchMateDto.Result> {

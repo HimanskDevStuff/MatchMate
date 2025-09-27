@@ -79,5 +79,7 @@ data class MatchMateEntity(
     @ColumnInfo(name = "match_status")
     val matchStatus: MatchStatus,
     @ColumnInfo(name = "created_at")
-    val createdAt: Long = System.currentTimeMillis()
+    val createdAt: Long = System.currentTimeMillis(),
+    @ColumnInfo(name = "page_number")
+    val pageNumber: Int
 )

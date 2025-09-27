@@ -73,7 +73,6 @@ fun ShaadiSwipeCard(
     ) {
         cardContent()
 
-        // Right Swipe Indicator with Rotation
         Box(
             modifier = Modifier
                 .rightSwipeModifier(
@@ -96,7 +95,6 @@ fun ShaadiSwipeCard(
             )
         }
 
-        // Left Swipe Indicator
         Box(
             modifier = Modifier
                 .leftSwipeModifier(

@@ -49,13 +49,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.match.matchmate.presentation.matchMate.contracts.MatchmateAction
 import kotlin.random.Random
 
 @Composable
 fun MatchScreen(
-    userImageRes: String, // Replace with actual image resource
-    matchImageRes: String, // Replace with actual image resource
+    userImageRes: String,
+    matchImageRes: String,
     matchName: String = "Himanshu",
     onKeepSwiping: () -> Unit
 ) {

@@ -151,7 +151,6 @@ private fun MatchmateScreen(
                                     modifier = Modifier
                                         .fillMaxSize()
                                 ) {
-                                    // Add bounds checking for content
                                     if (index < state.matchMateResponse.results.size) {
                                         when (state.matchMateResponse.results[index].matchStatus) {
                                             MatchStatus.NOT_DECIDED -> {
@@ -191,13 +190,11 @@ private fun MatchmateScreen(
                                             }
                                         }
                                     } else {
-                                        // Show loading for indices that don't have data yet
                                         CircularProgressComponent()
                                     }
                                 }
                             }
                         } else {
-                            // Fallback when no data
                             CircularProgressComponent()
                         }
                     }

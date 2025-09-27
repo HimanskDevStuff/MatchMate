@@ -15,17 +15,8 @@ interface MatchMateDao {
     @Query("SELECT * FROM match_mate_results ORDER BY created_at ASC")
     fun getAllMatchMates(): Flow<List<MatchMateEntity>>
 
-    @Query("SELECT * FROM match_mate_results WHERE uuid = :uuid")
-    suspend fun getMatchMateByUuid(uuid: String): MatchMateEntity?
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMatchMates(matchMates: List<MatchMateEntity>)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertMatchMate(matchMate: MatchMateEntity)
-
-    @Update
-    suspend fun updateMatchMateStatus(matchMate: MatchMateEntity)
 
     @Query("UPDATE match_mate_results SET match_status = :status WHERE uuid = :uuid")
     suspend fun updateMatchStatus(uuid: String, status: MatchStatus)
@@ -33,6 +24,10 @@ interface MatchMateDao {
     @Query("DELETE FROM match_mate_results")
     suspend fun clearAll()
 
-    @Query("SELECT COUNT(*) FROM match_mate_results")
-    suspend fun getCount(): Int
+    @Query("SELECT * FROM match_mate_results WHERE page_number = :pageNumber ORDER BY created_at ASC")
+    suspend fun getMatchMatesByPage(pageNumber: Int): List<MatchMateEntity>
+
+    @Query("SELECT COUNT(*) FROM match_mate_results WHERE page_number = :pageNumber")
+    suspend fun getPageItemCount(pageNumber: Int): Int
+
 }

@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.chuckerteam.chucker.api.Chucker
 import com.match.matchmate.presentation.navigation.AppNavigation
 import com.match.matchmate.theme.MatchMateTheme
 import dagger.hilt.android.AndroidEntryPoint

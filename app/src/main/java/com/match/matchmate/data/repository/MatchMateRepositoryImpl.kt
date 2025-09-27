@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.flow
 import saathi.core.service.InternetChecker
 import javax.inject.Inject
 
-class MatchMateRepositoryImpl (
+class MatchMateRepositoryImpl @Inject constructor(
     private val internetChecker: InternetChecker,
     private val apiService: MatchMateApiService,
     private val localDataSource: MatchMateLocalDataSource
@@ -41,7 +41,7 @@ class MatchMateRepositoryImpl (
                     if (page == 0) {
                         Log.d(TAG, "First page with internet - clearing local data")
                         localDataSource.clearAll()
-                }
+                    }
 
                 // Fetch from API using safeApiCall
                 val apiResult = safeApiCall {
@@ -53,34 +53,35 @@ class MatchMateRepositoryImpl (
                         is BaseUiState.Loading -> {
                             emit(BaseUiState.Loading)
                         }
-
                         is BaseUiState.Success -> {
                             val apiData = apiState.data
                             if (apiData != null && apiData.results.isNotEmpty()) {
-                                // Save to local database
-                                Log.d(TAG, "Saving ${apiData.results.size} items to local database")
-                                localDataSource.insertMatchMates(apiData.results.toEntityList())
+                                // Save to local database with page number
+                                Log.d(
+                                    TAG,
+                                    "Saving ${apiData.results.size} items to local database for page $page"
+                                )
+                                localDataSource.insertMatchMates(apiData.results.toEntityList(page))
 
                                 // Emit API data
                                 emit(BaseUiState.Success(apiData))
                             } else {
                                 // No more data from API
-                                Log.d(TAG, "No more data from API")
+                                Log.d(TAG, "No more data from API for page $page")
                                 emit(BaseUiState.Success(MatchMateDto(results = mutableListOf())))
                             }
                         }
-
                         is BaseUiState.Error -> {
-                            Log.e(TAG, "API error, falling back to local data")
-                            // API failed, try local data
-                            emitLocalData(this@flow)
+                            Log.e(TAG, "API error for page $page, checking local data")
+                            // API failed, check if we have this specific page locally
+                            emitLocalPageData(this@flow, page, limit)
                         }
                     }
                 }
             } else {
-                Log.d(TAG, "No internet - using local data")
-                // No internet, use local data
-                emitLocalData(this@flow)
+                Log.d(TAG, "No internet - checking local data for page $page")
+                // No internet, check if we have this specific page locally
+                emitLocalPageData(this@flow, page, limit)
             }
         } catch (e: Exception) {
             Log.e(TAG, "Repository error: ${e.message}", e)
@@ -95,6 +96,27 @@ class MatchMateRepositoryImpl (
         }
     }
 
+    private suspend fun emitLocalPageData(
+        flowCollector: FlowCollector<BaseUiState<MatchMateDto?>>,
+        requestedPage: Int,
+        limit: Int
+    ) {
+        // Check if we have data for the requested page
+        val hasRequestedPageData = localDataSource.hasPageData(requestedPage)
+
+        if (hasRequestedPageData) {
+            Log.d(TAG, "Found local data for page $requestedPage")
+            // Get only the specific page data
+            val entities = localDataSource.getMatchMatesByPage(requestedPage)
+            val localData = MatchMateDto(results = entities.toResultList().toMutableList())
+            flowCollector.emit(BaseUiState.Success(localData))
+        } else {
+            Log.d(TAG, "No local data available for page $requestedPage")
+            // No data for this page - emit empty result
+            flowCollector.emit(BaseUiState.Success(MatchMateDto(results = mutableListOf())))
+        }
+    }
+
     private suspend fun emitLocalData(flowCollector: FlowCollector<BaseUiState<MatchMateDto?>>) {
         localDataSource.getAllMatchMates().collect { entities ->
             if (entities.isNotEmpty()) {
@@ -105,6 +127,24 @@ class MatchMateRepositoryImpl (
                 Log.d(TAG, "No local data available")
                 flowCollector.emit(BaseUiState.Success(MatchMateDto(results = mutableListOf())))
             }
+        }
+    }
+
+    override suspend fun updateMatchStatus(uuid: String, status: MatchStatus) {
+        try {
+            Log.d(TAG, "Updating match status for $uuid to $status")
+            localDataSource.updateMatchStatus(uuid, status)
+        } catch (e: Exception) {
+            Log.e(TAG, "Error updating match status: ${e.message}", e)
+        }
+    }
+
+    override suspend fun clearAllData() {
+        try {
+            Log.d(TAG, "Clearing all local data")
+            localDataSource.clearAll()
+        } catch (e: Exception) {
+            Log.e(TAG, "Error clearing data: ${e.message}", e)
         }
     }
 }

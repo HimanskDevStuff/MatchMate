@@ -13,9 +13,6 @@ import saathi.core.service.InternetChecker
 import saathi.core.service.InternetCheckerImpl
 import javax.inject.Singleton
 
-/**
- * Hilt module that provides data layer dependencies for the Matchmate feature.
- */
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {

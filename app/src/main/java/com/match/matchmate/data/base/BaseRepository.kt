@@ -1,6 +1,5 @@
 package com.match.matchmate.data.base
 
-import com.match.matchmate.data.model.MatchMateDto
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -55,6 +54,7 @@ open class BaseRepository @Inject constructor(
                 val body = e.response()?.errorBody()?.string()
                 ErrorResponse(message = body ?: "Http exception")
             }
+
             is SocketTimeoutException -> ErrorResponse(message = "Connection timed out")
             else -> ErrorResponse(message = e.message ?: "Unknown error")
         }
