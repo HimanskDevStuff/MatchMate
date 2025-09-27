@@ -303,7 +303,7 @@ fun MatchmateScreen(state: MatchmateState, onAction: (MatchmateAction) -> Unit) 
 
 <div align="center">
 
-[![Download Debug APK](https://img.shields.io/badge/Download-Debug%20APK%20-orange?style=for-the-badge&logo=android)]([https://github.com/yourusername/matchmate/releases/latest/download/matchmate-debug.apk](https://github.com/HimanskDevStuff/MatchMate/releases/tag/v1.0.0))
+[![Download Debug APK](https://img.shields.io/badge/Download-Debug%20APK%20-orange?style=for-the-badge&logo=android)](https://github.com/HimanskDevStuff/MatchMate/releases/tag/v1.0.0)
 
 </div>
 
