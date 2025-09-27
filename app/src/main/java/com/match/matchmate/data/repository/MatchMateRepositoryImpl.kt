@@ -33,17 +33,14 @@ class MatchMateRepositoryImpl @Inject constructor(
             Log.d(TAG, "Fetching data for page: $page, limit: $limit")
 
             try {
-                // Check if internet is available
                 if (internetChecker.isInternetAvailable) {
                     Log.d(TAG, "Internet available - fetching from API")
 
-                    // If it's the first page, clear existing data when internet is available
                     if (page == 0) {
                         Log.d(TAG, "First page with internet - clearing local data")
                         localDataSource.clearAll()
                     }
 
-                // Fetch from API using safeApiCall
                 val apiResult = safeApiCall {
                     apiService.getAllUsers(page = page, results = limit)
                 }
@@ -56,31 +53,26 @@ class MatchMateRepositoryImpl @Inject constructor(
                         is BaseUiState.Success -> {
                             val apiData = apiState.data
                             if (apiData != null && apiData.results.isNotEmpty()) {
-                                // Save to local database with page number
                                 Log.d(
                                     TAG,
                                     "Saving ${apiData.results.size} items to local database for page $page"
                                 )
                                 localDataSource.insertMatchMates(apiData.results.toEntityList(page))
 
-                                // Emit API data
                                 emit(BaseUiState.Success(apiData))
                             } else {
-                                // No more data from API
                                 Log.d(TAG, "No more data from API for page $page")
                                 emit(BaseUiState.Success(MatchMateDto(results = mutableListOf())))
                             }
                         }
                         is BaseUiState.Error -> {
                             Log.e(TAG, "API error for page $page, checking local data")
-                            // API failed, check if we have this specific page locally
                             emitLocalPageData(this@flow, page, limit)
                         }
                     }
                 }
             } else {
                 Log.d(TAG, "No internet - checking local data for page $page")
-                // No internet, check if we have this specific page locally
                 emitLocalPageData(this@flow, page, limit)
             }
         } catch (e: Exception) {
@@ -101,34 +93,19 @@ class MatchMateRepositoryImpl @Inject constructor(
         requestedPage: Int,
         limit: Int
     ) {
-        // Check if we have data for the requested page
         val hasRequestedPageData = localDataSource.hasPageData(requestedPage)
 
         if (hasRequestedPageData) {
             Log.d(TAG, "Found local data for page $requestedPage")
-            // Get only the specific page data
             val entities = localDataSource.getMatchMatesByPage(requestedPage)
             val localData = MatchMateDto(results = entities.toResultList().toMutableList())
             flowCollector.emit(BaseUiState.Success(localData))
         } else {
             Log.d(TAG, "No local data available for page $requestedPage")
-            // No data for this page - emit empty result
             flowCollector.emit(BaseUiState.Success(MatchMateDto(results = mutableListOf())))
         }
     }
 
-    private suspend fun emitLocalData(flowCollector: FlowCollector<BaseUiState<MatchMateDto?>>) {
-        localDataSource.getAllMatchMates().collect { entities ->
-            if (entities.isNotEmpty()) {
-                Log.d(TAG, "Emitting ${entities.size} items from local database")
-                val localData = MatchMateDto(results = entities.toResultList().toMutableList())
-                flowCollector.emit(BaseUiState.Success(localData))
-            } else {
-                Log.d(TAG, "No local data available")
-                flowCollector.emit(BaseUiState.Success(MatchMateDto(results = mutableListOf())))
-            }
-        }
-    }
 
     override suspend fun updateMatchStatus(uuid: String, status: MatchStatus) {
         try {

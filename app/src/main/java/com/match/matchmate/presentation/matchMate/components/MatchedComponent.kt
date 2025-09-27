@@ -71,7 +71,6 @@ fun MatchScreen(
                 )
             )
 
-            // Remove old hearts
             if (floatingHearts.size > 15) {
                 floatingHearts.removeAt(0)
             }
@@ -93,7 +92,6 @@ fun MatchScreen(
                 )
             )
     ) {
-        // Floating hearts background
         floatingHearts.forEach { heart ->
             FloatingHeartAnimation(heart = heart)
         }
@@ -159,12 +157,10 @@ fun ProfilePicturesSection(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
-        // User profile picture
         ProfilePicture(imageRes = userImageRes)
 
         Spacer(modifier = Modifier.width(24.dp))
 
-        // Animated heart in the middle
         Card(
             modifier = Modifier
                 .size(48.dp)
@@ -188,7 +184,6 @@ fun ProfilePicturesSection(
 
         Spacer(modifier = Modifier.width(24.dp))
 
-        // Match profile picture
         ProfilePicture(imageRes = matchImageRes)
     }
 }
@@ -239,9 +234,8 @@ fun ActionButtons(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        // Send Message Button
         Button(
-            onClick = { /* Handle send message */ },
+            onClick = {},
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp),
@@ -283,7 +277,6 @@ fun ActionButtons(
     }
 }
 
-// Data class for floating hearts
 data class FloatingHeart(
     val x: Float,
     val y: Float,

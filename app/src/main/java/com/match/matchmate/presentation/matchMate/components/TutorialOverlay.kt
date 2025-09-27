@@ -103,7 +103,6 @@ private fun TutorialContent(onDismiss: () -> Unit) {
         verticalArrangement = Arrangement.spacedBy(32.dp),
         modifier = Modifier.padding(24.dp)
     ) {
-        // Title
         Text(
             text = "Welcome to MatchMate! 💕",
             style = MaterialTheme.typography.headlineMedium,
@@ -119,7 +118,6 @@ private fun TutorialContent(onDismiss: () -> Unit) {
             textAlign = TextAlign.Center
         )
 
-        // Vertical Swipe Instructions
         TutorialCard {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -136,7 +134,6 @@ private fun TutorialContent(onDismiss: () -> Unit) {
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    // Up Arrow with Animation
                     Box(
                         modifier = Modifier.offset(y = verticalOffset.dp),
                         contentAlignment = Alignment.Center
@@ -156,7 +153,6 @@ private fun TutorialContent(onDismiss: () -> Unit) {
                         lineHeight = 20.sp
                     )
 
-                    // Down Arrow with Animation
                     Box(
                         modifier = Modifier.offset(y = (-verticalOffset).dp),
                         contentAlignment = Alignment.Center
@@ -172,7 +168,6 @@ private fun TutorialContent(onDismiss: () -> Unit) {
             }
         }
 
-        // Horizontal Swipe Instructions
         TutorialCard {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -189,7 +184,6 @@ private fun TutorialContent(onDismiss: () -> Unit) {
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(24.dp)
                 ) {
-                    // Left swipe (Reject)
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -218,7 +212,6 @@ private fun TutorialContent(onDismiss: () -> Unit) {
                         )
                     }
 
-                    // Divider
                     Box(
                         modifier = Modifier
                             .width(2.dp)
@@ -226,7 +219,6 @@ private fun TutorialContent(onDismiss: () -> Unit) {
                             .background(MaterialTheme.colorScheme.outline.copy(alpha = 0.3f))
                     )
 
-                    // Right swipe (Like)
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -260,7 +252,6 @@ private fun TutorialContent(onDismiss: () -> Unit) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Dismiss Button
         Card(
             onClick = onDismiss,
             colors = CardDefaults.cardColors(
