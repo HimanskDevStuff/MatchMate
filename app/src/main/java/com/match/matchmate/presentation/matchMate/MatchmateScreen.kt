@@ -83,7 +83,6 @@ private fun MatchmateScreen(
                         onAction(MatchmateAction.LoadNextPageData)
                     }
 
-
                     currentPage.intValue = page
 
                     currentPage.intValue = if (state.matchMateResponse.results.isEmpty()) {
@@ -91,7 +90,6 @@ private fun MatchmateScreen(
                     } else {
                         currentPage.intValue.coerceIn(0, state.matchMateResponse.results.size - 1)
                     }
-
                 }
         }
     }
@@ -124,93 +122,91 @@ private fun MatchmateScreen(
                 if (!hasValidData) {
                     CircularProgressComponent()
                 } else {
-                    ShaadiSwipeCard(
-                        disableSwipe = state.matchMateResponse.results[currentPage.intValue].matchStatus != MatchStatus.NOT_DECIDED,
-                        onSwipeLeftAction = {
-                            onAction.invoke(
-                                MatchmateAction.DislikeClicked(
-                                    state.matchMateResponse.results[currentPage.intValue].login.uuid,
-                                    currentPage.intValue
-                                )
-                            )
-                        },
-                        onSwipeRightAction = {
-                            Log.d("ShaadiSwipeCard", "Right ${currentPage.intValue}")
-
-                            onAction.invoke(
-                                MatchmateAction.LikeClicked(
-                                    state.matchMateResponse.results[currentPage.intValue].login.uuid,
-                                    currentPage.intValue
-                                )
-                            )
-                        }
-                    ) {
-                        if (state.matchMateResponse.results.isNotEmpty()) {
-                            VerticalPager(
-                                modifier = Modifier
-                                    .fillMaxSize(),
-                                userScrollEnabled = true,
-                                state = pagerState,
-                                key = { index ->
-                                    if (index < state.matchMateResponse.results.size) {
-                                        state.matchMateResponse.results[index].login.uuid
-                                    } else {
-                                        "loading_$index"
-                                    }
-                                }) { index ->
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                ) {
-                                    if (index < state.matchMateResponse.results.size) {
-                                        when (state.matchMateResponse.results[index].matchStatus) {
-                                            MatchStatus.NOT_DECIDED -> {
+                    if (state.matchMateResponse.results.isNotEmpty()) {
+                        VerticalPager(
+                            modifier = Modifier.fillMaxSize(),
+                            userScrollEnabled = true,
+                            state = pagerState,
+                            key = { index ->
+                                if (index < state.matchMateResponse.results.size) {
+                                    state.matchMateResponse.results[index].login.uuid
+                                } else {
+                                    "loading_$index"
+                                }
+                            }
+                        ) { index ->
+                            Box(
+                                modifier = Modifier.fillMaxSize()
+                            ) {
+                                if (index < state.matchMateResponse.results.size) {
+                                    when (state.matchMateResponse.results[index].matchStatus) {
+                                        MatchStatus.NOT_DECIDED -> {
+                                            // Only wrap NOT_DECIDED cards with ShaadiSwipeCard
+                                            ShaadiSwipeCard(
+                                                disableSwipe = false,
+                                                onSwipeLeftAction = {
+                                                    onAction.invoke(
+                                                        MatchmateAction.DislikeClicked(
+                                                            state.matchMateResponse.results[index].login.uuid,
+                                                            index
+                                                        )
+                                                    )
+                                                },
+                                                onSwipeRightAction = {
+                                                    Log.d("ShaadiSwipeCard", "Right $index")
+                                                    onAction.invoke(
+                                                        MatchmateAction.LikeClicked(
+                                                            state.matchMateResponse.results[index].login.uuid,
+                                                            index
+                                                        )
+                                                    )
+                                                }
+                                            ) {
                                                 VerticalPagerComponent(
                                                     index = index,
                                                     userData = state.matchMateResponse.results[index],
                                                     onAction = onAction
                                                 )
                                             }
-
-                                            MatchStatus.LIKED -> {
-                                                MatchScreen(
-                                                    userImageRes = "\"https://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png\"",
-                                                    matchImageRes = state.matchMateResponse.results[index].picture.thumbnail,
-                                                    matchName = state.matchMateResponse.results[index].name.first,
-                                                    onKeepSwiping = {
-                                                        coroutineScope.launch {
-                                                            pagerState
-                                                                .animateScrollToPage(currentPage.value + 1)
-                                                        }
-                                                    }
-                                                )
-                                            }
-
-                                            MatchStatus.DISLIKED -> {
-                                                NoMatchScreen(
-                                                    userImageRes = "https://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png",
-                                                    matchImageRes = state.matchMateResponse.results[index].picture.thumbnail,
-                                                    matchName = state.matchMateResponse.results[index].name.first,
-                                                    onKeepSwiping = {
-                                                        coroutineScope.launch {
-                                                            pagerState
-                                                                .animateScrollToPage(currentPage.value + 1)
-                                                        }
-                                                    }
-                                                )
-                                            }
                                         }
-                                    } else {
-                                        CircularProgressComponent()
+
+                                        MatchStatus.LIKED -> {
+                                            // Don't wrap with ShaadiSwipeCard
+                                            MatchScreen(
+                                                userImageRes = "\"https://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png\"",
+                                                matchImageRes = state.matchMateResponse.results[index].picture.thumbnail,
+                                                matchName = state.matchMateResponse.results[index].name.first,
+                                                onKeepSwiping = {
+                                                    coroutineScope.launch {
+                                                        pagerState.animateScrollToPage(currentPage.value + 1)
+                                                    }
+                                                }
+                                            )
+                                        }
+
+                                        MatchStatus.DISLIKED -> {
+                                            // Don't wrap with ShaadiSwipeCard
+                                            NoMatchScreen(
+                                                userImageRes = "https://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png",
+                                                matchImageRes = state.matchMateResponse.results[index].picture.thumbnail,
+                                                matchName = state.matchMateResponse.results[index].name.first,
+                                                onKeepSwiping = {
+                                                    coroutineScope.launch {
+                                                        pagerState.animateScrollToPage(currentPage.value + 1)
+                                                    }
+                                                }
+                                            )
+                                        }
                                     }
+                                } else {
+                                    CircularProgressComponent()
                                 }
                             }
-                        } else {
-                            CircularProgressComponent()
                         }
+                    } else {
+                        CircularProgressComponent()
                     }
                 }
-
             }
 
             if (showNoInternetAvailable.value) {

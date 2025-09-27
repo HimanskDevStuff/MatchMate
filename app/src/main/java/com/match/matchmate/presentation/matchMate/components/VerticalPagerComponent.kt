@@ -69,9 +69,7 @@ fun VerticalPagerComponent(
             Card(
                 modifier = Modifier
                     .weight(0.9f)
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                shape = RoundedCornerShape(16.dp),
+                    .fillMaxWidth(),                shape = RoundedCornerShape(16.dp),
                 elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
             ) {
                 Box(modifier = Modifier.fillMaxSize()) {
@@ -93,7 +91,6 @@ fun VerticalPagerComponent(
                             )
                     )
 
-                    // Country indicator
                     Row(
                         modifier = Modifier
                             .padding(16.dp)
@@ -103,16 +100,11 @@ fun VerticalPagerComponent(
                             .padding(horizontal = 12.dp, vertical = 6.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Box(
-                            modifier = Modifier
-                                .size(16.dp)
-                                .background(
-                                    Brush.horizontalGradient(
-                                        colors = listOf(
-                                            Color.Black, Color.Red, Color.Yellow
-                                        )
-                                    ), CircleShape
-                                )
+                        Icon(
+                            imageVector = Icons.Filled.LocationOn,
+                            contentDescription = "Location",
+                            tint = Color.White,
+                            modifier = Modifier.size(16.dp)
                         )
                         Spacer(modifier = Modifier.width(6.dp))
                         Text(
