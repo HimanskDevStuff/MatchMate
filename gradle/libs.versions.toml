@@ -20,6 +20,7 @@ navigationCompose = "2.9.5"
 vRetrofit = "3.0.0"
 library = "4.2.0"
 kotlinx = "2.2.20"
+room = "2.6.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -49,7 +50,10 @@ kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-cor
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "vRetrofit" }
 chucker = { group = "com.github.chuckerteam.chucker", name = "library", version.ref = "library" }
-chucker-no-op = { module = "com.github.chuckerteam.chucker:library-no-op", version.ref = "library" }
+chucker-no-op = { group = "com.github.chuckerteam.chucker", name = "library-no-op", version.ref = "library" }
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -15,5 +15,5 @@ interface MatchMateRepository {
      * @return A Result object containing the Matchmate domain model on success,
      * or an exception on failure.
      */
-    suspend fun getMatchmateData(): Flow<BaseUiState<MatchMateDto?>>
+    suspend fun getMatchmateData(page: Int, limit: Int): Flow<BaseUiState<MatchMateDto?>>
 }

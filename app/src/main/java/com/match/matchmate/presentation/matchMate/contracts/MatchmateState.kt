@@ -10,5 +10,8 @@ import com.match.matchmate.data.model.MatchMateDto
  */
 data class MatchmateState(
     val isLoading: Boolean = false,
-    val matchMateResponse: MatchMateDto = MatchMateDto()
+    val isInternetAvailable: Boolean = true,
+    val matchMateResponse: MatchMateDto = MatchMateDto(),
+    val currentPage: Int = 0,
+    val hasMorePages: Boolean = true
 )

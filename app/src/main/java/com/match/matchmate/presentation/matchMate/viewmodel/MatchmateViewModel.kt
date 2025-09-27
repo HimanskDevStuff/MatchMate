@@ -1,5 +1,6 @@
 package com.match.matchmate.presentation.matchMate.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.match.matchmate.data.base.BaseUiState
@@ -17,6 +18,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import saathi.core.service.InternetChecker
 import javax.inject.Inject
 
 /**
@@ -24,7 +26,8 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class MatchmateViewModel @Inject constructor(
-    private val getMatchmateDataUseCase: GetMatchmateDataUseCase
+    private val getMatchmateDataUseCase: GetMatchmateDataUseCase,
+    private val internetChecker: InternetChecker
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(MatchmateState())
@@ -34,7 +37,13 @@ class MatchmateViewModel @Inject constructor(
     val event = _event.asSharedFlow()
 
     init {
-        loadInitialData()
+        loadMatchMateDate()
+        viewModelScope.launch {
+            internetChecker.isNetworkConnectedFlow.collectLatest { isAvailable ->
+
+                _state.update { it.copy(isInternetAvailable = isAvailable) }
+            }
+        }
     }
 
     fun onAction(action: MatchmateAction) {
@@ -48,7 +57,7 @@ class MatchmateViewModel @Inject constructor(
                 _state.update { myState ->
                     myState.copy(
                         matchMateResponse = myState.matchMateResponse.copy(
-                            results = updatedResults
+                            results = updatedResults.toMutableList()
                         )
                     )
                 }
@@ -63,10 +72,28 @@ class MatchmateViewModel @Inject constructor(
                 _state.update { myState ->
                     myState.copy(
                         matchMateResponse = myState.matchMateResponse.copy(
-                            results = updatedResults
+                            results = updatedResults.toMutableList()
                         )
                     )
                 }
+            }
+
+            is MatchmateAction.LoadNextPageData -> {
+                // Don't increment page here - do it in loadMatchMateDate after successful response
+                if (!_state.value.isLoading && _state.value.hasMorePages) {
+                    loadMatchMateDate()
+                }
+            }
+
+            is MatchmateAction.RefreshData -> {
+                _state.update {
+                    it.copy(
+                        currentPage = 0,
+                        hasMorePages = true,
+                        matchMateResponse = MatchMateDto()
+                    )
+                }
+                loadMatchMateDate()
             }
 
             else -> {
@@ -75,26 +102,40 @@ class MatchmateViewModel @Inject constructor(
         }
     }
 
-    private fun loadInitialData() {
+    private fun loadMatchMateDate() {
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
-            getMatchmateDataUseCase.getMatchMateData().collectLatest { response ->
+            // Use currentPage + 1 for the API call since most APIs expect 1-based indexing
+            val pageToLoad = _state.value.currentPage + 1
+            getMatchmateDataUseCase.getMatchMateData(pageToLoad, 10).collectLatest { response ->
                 when (response) {
                     is BaseUiState.Loading -> {
-                        _state.update { it.copy(isLoading = true) }
+                        _state.update { it.copy(
+                            isLoading = _state.value.matchMateResponse.results.isEmpty()
+                        ) }
                     }
 
                     is BaseUiState.Success -> {
-                        _state.update {
-                            it.copy(
+                        val newResults = response.data?.results ?: emptyList()
+                        _state.update { currentState ->
+                            currentState.copy(
                                 isLoading = false,
-                                matchMateResponse = response.data ?: MatchMateDto()
+                                matchMateResponse = currentState.matchMateResponse.copy(
+                                    results = ArrayList(currentState.matchMateResponse.results + newResults)
+                                ),
+                                hasMorePages = newResults.size == 10,
+                                // Only increment page after successful response
+                                currentPage = if (newResults.isNotEmpty()) currentState.currentPage + 1 else currentState.currentPage
                             )
                         }
                     }
 
                     is BaseUiState.Error -> {
                         _state.update { it.copy(isLoading = false) }
+                        Log.e(
+                            "MatchmateViewModel",
+                            "Error loading page $pageToLoad: ${response.error.message ?: response.error.code}"
+                        )
                     }
                 }
             }

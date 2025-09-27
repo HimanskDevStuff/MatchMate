@@ -16,7 +16,7 @@ class GetMatchmateDataUseCase @Inject constructor(
     /**
      * Executes the use case.
      */
-    suspend fun getMatchMateData(): Flow<BaseUiState<MatchMateDto?>> {
-        return repository.getMatchmateData()
+    suspend fun getMatchMateData(page: Int, limit: Int): Flow<BaseUiState<MatchMateDto?>> {
+        return repository.getMatchmateData(page, limit)
     }
 }

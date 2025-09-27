@@ -9,7 +9,7 @@ data class MatchMateDto(
     @SerialName("info")
     val info: Info = Info(),
     @SerialName("results")
-    val results: List<Result> = listOf()
+    val results: MutableList<Result> = mutableListOf()
 ) {
     @Serializable
     data class Info(
