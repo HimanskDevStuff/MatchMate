@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.flow
 import saathi.core.service.InternetChecker
 import javax.inject.Inject
 
-class MatchMateRepositoryImpl @Inject constructor(
+class MatchMateRepositoryImpl (
     private val internetChecker: InternetChecker,
     private val apiService: MatchMateApiService,
     private val localDataSource: MatchMateLocalDataSource
@@ -34,11 +34,11 @@ class MatchMateRepositoryImpl @Inject constructor(
 
             try {
                 // Check if internet is available
-                if (internetChecker.isNetworkConnected()) {
+                if (internetChecker.isInternetAvailable) {
                     Log.d(TAG, "Internet available - fetching from API")
 
                     // If it's the first page, clear existing data when internet is available
-                    if (page == 1) {
+                    if (page == 0) {
                         Log.d(TAG, "First page with internet - clearing local data")
                         localDataSource.clearAll()
                 }

@@ -1,5 +1,6 @@
 package com.match.matchmate.domain.di
 
+import com.match.matchmate.data.local.datasource.MatchMateLocalDataSource
 import com.match.matchmate.data.repository.MatchMateRepositoryImpl
 import com.match.matchmate.data.service.MatchMateApiService
 import com.match.matchmate.domain.repository.MatchMateRepository
@@ -16,10 +17,11 @@ object RepositoryModule {
 
     @Provides
     @Singleton
-    fun provideMatchMateRepository(internetChecker: InternetChecker, apiService: MatchMateApiService) : MatchMateRepository {
+    fun provideMatchMateRepository(internetChecker: InternetChecker, apiService: MatchMateApiService, localDataSource: MatchMateLocalDataSource) : MatchMateRepository {
        return MatchMateRepositoryImpl(
             internetChecker,
-            apiService
+            apiService,
+            localDataSource
         )
     }
 }
