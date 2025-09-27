@@ -354,18 +354,6 @@ buildTypes {
 - **Room Inspector**: Database debugging
 - **Layout Inspector**: UI debugging
 
-## 🧪 Testing Strategy
-
-### Unit Tests
-- ViewModel business logic
-- Repository caching behavior
-- Use case implementations
-
-### Integration Tests
-- Room database operations
-- Network + caching flow
-- Offline/online transitions
-
 ## 🎨 UI/UX Features
 
 ### 🎭 Animations & Interactions
@@ -380,20 +368,6 @@ buildTypes {
 - **Dark Mode Support**: Automatic theme switching
 - **Accessibility**: Screen reader and navigation support
 
-## 🔮 Future Enhancements
-
-- [ ] **Advanced Filters**: Age, location, education, profession
-- [ ] **Family Details**: Extended family information
-- [ ] **Horoscope Integration**: Astrological compatibility
-- [ ] **Video Introductions**: Personal video profiles
-- [ ] **Interest Management**: Mutual interest tracking
-- [ ] **Community Features**: Trusted network recommendations
-
-## 👥 Contributing
-
-We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING.md) before
-submitting PRs.
-
 ### Development Workflow
 1. Fork the repository
 2. Create feature branch (`git checkout -b feature/amazing-feature`)
@@ -401,9 +375,6 @@ submitting PRs.
 4. Push to branch (`git push origin feature/amazing-feature`)
 5. Open Pull Request
 
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 🤝 Acknowledgments
 
@@ -417,6 +388,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Built with ❤️ for Matrimonial Connections using Modern Android Development**
 
-[Report Bug](https://github.com/yourusername/matchmate/issues) · [Request Feature](https://github.com/yourusername/matchmate/issues) · [Documentation](https://github.com/yourusername/matchmate/wiki)
+[Report Bug](https://github.com/HimanskDevStuff/matchmate/issues)
 
 </div>
