@@ -307,10 +307,6 @@ fun MatchmateScreen(state: MatchmateState, onAction: (MatchmateAction) -> Unit) 
 
 </div>
 
-**APK Variants:**
-
-- **🟢 Release APK**: Optimized production build, smaller size, no debugging tools
-- **🟠 Debug APK**: Development build with Chucker network inspector for API monitoring
 
 > **Note**: Debug APK includes [Chucker](https://github.com/ChuckerTeam/chucker) for real-time
 > network traffic inspection and debugging.
