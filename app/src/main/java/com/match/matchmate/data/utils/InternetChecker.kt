@@ -66,7 +66,7 @@ class InternetCheckerImpl(
         awaitClose { connectivityManager.unregisterNetworkCallback(callback) }
     }
 
-    private val _isInternetAvailableFlow = MutableStateFlow(false)
+    private val _isInternetAvailableFlow = MutableStateFlow(true)
     override val isInternetAvailableFlow: StateFlow<Boolean> = _isInternetAvailableFlow
 
     override val isInternetAvailable: Boolean

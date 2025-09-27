@@ -35,7 +35,7 @@ class MatchmateViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            internetChecker.isInternetAvailableFlow.collect { isAvailable ->
+            internetChecker.isInternetAvailableFlow.collectLatest { isAvailable ->
                 _state.update { it.copy(isInternetAvailable = isAvailable) }
                 if (_state.value.matchMateResponse.results.isEmpty() || _state.value.pageToLoad > _state.value.currentPage) {
                     loadMatchMateDate()
