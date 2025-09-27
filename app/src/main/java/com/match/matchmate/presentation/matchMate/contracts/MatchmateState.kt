@@ -8,5 +8,6 @@ data class MatchmateState(
     val matchMateResponse: MatchMateDto = MatchMateDto(),
     val currentPage: Int = 0,
     val hasMorePages: Boolean = true,
-    val pageToLoad: Int = 0
+    val pageToLoad: Int = 0,
+    val showTutorial: Boolean = true
 )

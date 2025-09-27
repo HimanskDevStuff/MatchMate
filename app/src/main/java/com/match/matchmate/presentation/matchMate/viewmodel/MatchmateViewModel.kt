@@ -24,7 +24,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MatchmateViewModel @Inject constructor(
     private val getMatchmateDataUseCase: GetMatchmateDataUseCase,
-    private val internetChecker: InternetChecker
+    private val internetChecker: InternetChecker,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(MatchmateState())
@@ -37,7 +37,7 @@ class MatchmateViewModel @Inject constructor(
         viewModelScope.launch {
             internetChecker.isNetworkConnectedFlow.collectLatest { isAvailable ->
                 _state.update { it.copy(isInternetAvailable = isAvailable) }
-               if (_state.value.matchMateResponse.results.isEmpty() || _state.value.pageToLoad > _state.value.currentPage) {
+                if (isAvailable && _state.value.matchMateResponse.results.isEmpty() || _state.value.pageToLoad > _state.value.currentPage) {
                     loadMatchMateDate()
                 }
             }
@@ -99,6 +99,10 @@ class MatchmateViewModel @Inject constructor(
                     loadMatchMateDate()
                 }
             }
+
+            is MatchmateAction.DismissTutorial -> {
+                _state.update { it.copy(showTutorial = false) }
+             }
 
             else -> {
 

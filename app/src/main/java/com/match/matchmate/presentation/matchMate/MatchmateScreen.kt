@@ -3,23 +3,25 @@ package com.match.matchmate.presentation.matchMate
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
@@ -32,6 +34,7 @@ import com.match.matchmate.presentation.base.components.CircularProgressComponen
 import com.match.matchmate.presentation.base.components.ShaadiSwipeCard
 import com.match.matchmate.presentation.matchMate.components.MatchScreen
 import com.match.matchmate.presentation.matchMate.components.NoMatchScreen
+import com.match.matchmate.presentation.matchMate.components.TutorialOverlay
 import com.match.matchmate.presentation.matchMate.components.VerticalPagerComponent
 import com.match.matchmate.presentation.matchMate.contracts.MatchmateAction
 import com.match.matchmate.presentation.matchMate.contracts.MatchmateEvent
@@ -79,15 +82,24 @@ private fun MatchmateScreen(
                     if(state.matchMateResponse.results.isNotEmpty() && page >= state.matchMateResponse.results.size - 4){
                         onAction(MatchmateAction.LoadNextPageData)
                     }
+
+
                     currentPage.intValue = page
+
+                    currentPage.intValue = if (state.matchMateResponse.results.isEmpty()) {
+                        0
+                    } else {
+                        currentPage.intValue.coerceIn(0, state.matchMateResponse.results.size - 1)
+                    }
+
                 }
         }
     }
 
-    LaunchedEffect( state.isInternetAvailable) {
+    LaunchedEffect(state.isInternetAvailable) {
         showNoInternetAvailable.value = true
         delay(6000)
-        if(state.isInternetAvailable) {
+        if (state.isInternetAvailable) {
             showNoInternetAvailable.value = false
         }
     }
@@ -99,37 +111,36 @@ private fun MatchmateScreen(
             modifier = Modifier
                 .background(Color.Black)
                 .fillMaxSize()
-                .padding(paddingValues)
         ) {
             if (state.isLoading && state.matchMateResponse.results.isEmpty()) {
                 CircularProgressComponent()
             } else {
-                val currentIndex = if (state.matchMateResponse.results.isEmpty()) {
-                    0
-                } else {
-                    currentPage.intValue.coerceIn(0, state.matchMateResponse.results.size - 1)
-                }
+
+                Log.d("ShaadiSwipeCard", "onSwipeLeftAction ::${currentPage.intValue}")
+
                 val hasValidData =
-                    state.matchMateResponse.results.isNotEmpty() && currentIndex < state.matchMateResponse.results.size
+                    state.matchMateResponse.results.isNotEmpty() && currentPage.intValue < state.matchMateResponse.results.size
 
                 if (!hasValidData) {
                     CircularProgressComponent()
                 } else {
                     ShaadiSwipeCard(
-                        disableSwipe = state.matchMateResponse.results[currentIndex].matchStatus != MatchStatus.NOT_DECIDED,
+                        disableSwipe = state.matchMateResponse.results[currentPage.intValue].matchStatus != MatchStatus.NOT_DECIDED,
                         onSwipeLeftAction = {
                             onAction.invoke(
                                 MatchmateAction.DislikeClicked(
-                                    state.matchMateResponse.results[currentIndex].login.uuid,
-                                    currentIndex
+                                    state.matchMateResponse.results[currentPage.intValue].login.uuid,
+                                    currentPage.intValue
                                 )
                             )
                         },
                         onSwipeRightAction = {
+                            Log.d("ShaadiSwipeCard", "Right ${currentPage.intValue}")
+
                             onAction.invoke(
                                 MatchmateAction.LikeClicked(
-                                    state.matchMateResponse.results[currentIndex].login.uuid,
-                                    currentIndex
+                                    state.matchMateResponse.results[currentPage.intValue].login.uuid,
+                                    currentPage.intValue
                                 )
                             )
                         }
@@ -220,6 +231,11 @@ private fun MatchmateScreen(
                     )
                 }
             }
+
+            TutorialOverlay(
+                isVisible = state.showTutorial,
+                onDismiss = { onAction(MatchmateAction.DismissTutorial) }
+            )
         }
     }
 }

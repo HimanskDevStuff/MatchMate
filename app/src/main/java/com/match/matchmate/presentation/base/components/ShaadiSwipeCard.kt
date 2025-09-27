@@ -1,5 +1,6 @@
 package com.match.matchmate.presentation.base.components
 
+import android.util.Log
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
@@ -39,6 +40,7 @@ fun ShaadiSwipeCard(
     onSwipeRightAction: () -> Unit,
     cardContent: @Composable () -> Unit
 ) {
+    Log.d("TESTTT", "ShaadiSwipeCard $disableSwipe")
     if (disableSwipe) return cardContent()
     var horizontalOffset by remember { mutableFloatStateOf(0f) }
     val screenDensity = LocalDensity.current.density

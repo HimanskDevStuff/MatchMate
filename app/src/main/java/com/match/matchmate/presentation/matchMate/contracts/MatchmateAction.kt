@@ -5,5 +5,5 @@ sealed interface MatchmateAction {
    data class DislikeClicked(val uuid: String, val index: Int) : MatchmateAction
 
    data object LoadNextPageData : MatchmateAction
-   data object RefreshData : MatchmateAction
+   data object DismissTutorial : MatchmateAction
 }
